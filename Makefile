@@ -3,7 +3,7 @@ CFLAFS += -Wall -Wextra -Wpedantic -Wwrite-strings -Winline
 CFLAGS += -Wstack-usage=1024 -Wfloat-equal -Waggregate-return 
 
 FDR_BIN=fdr
-FDR_DEPS=fdr.o
+FDR_DEPS=fdr.o roman.o
 
 all:$(FDR_BIN)
 
