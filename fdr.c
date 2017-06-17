@@ -171,16 +171,25 @@ int build_socket(int port_modifier)
 char *buf_strip(char * buf)
 {
     char value = buf[0];
-    int retval = 0;
+    char *retval;
     switch(value){
 
     case 'R':
         //call fibonacci
-        return(roman(buf+1));
+        retval = roman(buf+1);
+        if(retval[0] == 'g')
+        {
+             exit(0);
+        }
+        return(retval);
     case 'r':
         //call fibonacci
-        return(roman(buf+1));
-
+        retval = roman(buf+1);
+        if(retval[0] == 'g')
+        {
+            exit(0);
+        }
+        return(retval);
     case 'D':
         //call decimal
         
@@ -207,11 +216,11 @@ char *fib(char *string)
 {
     char *err ='\0';
     long n = strtol(string, &err, 10);
-    if(!err)
+    if(err)
     {
         exit(0);
     }
-    
+     
     BIGNUM *first = BN_new();
     BIGNUM *second = BN_new();
     int c = 0;
@@ -247,6 +256,14 @@ char *fib(char *string)
 
 char *bignum(char * string)
 {
+    for(int a = 0; a < strlen(string); a++)
+    {
+        if(!isdigit(string[a]))
+        {
+            exit(0);
+        }
+    }
+    
     BIGNUM *num = BN_new();
     BN_dec2bn(&num, string);
     char *hexval = BN_bn2hex(num);

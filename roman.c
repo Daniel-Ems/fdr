@@ -69,8 +69,7 @@ int error_check(char *roman_numerals)
 
     if(strlen(roman_numerals) == 0)
     {
-        perror("Must be between 0 and 4000");
-        return 0;
+        return 1;
     }
     
     int retFlag = 0;
@@ -80,13 +79,11 @@ int error_check(char *roman_numerals)
        // printf("%c\n", roman_numerals[i]);
         if(!isalpha(roman_numerals[i]))
         {
-            perror("Numbers not allowed");
             retFlag = 1;
             break;
         }
         if (!isupper(roman_numerals[i]))
         {
-            perror("Must be all caps");
             retFlag = 1;
             break;
         }
@@ -102,7 +99,6 @@ int error_check(char *roman_numerals)
         }
         if(flag == 0)
         {
-            perror("Invalid Character");
             retFlag = 1;
             break;
         }
@@ -119,14 +115,14 @@ char *roman(char *buf)
 {
     
     char * roman_numerals = buf;
-     
-    printf("%s\n", roman_numerals);
+    char * err = "g"; 
     struct dictionary *dict = create(); 
     int array[32];
-    int err = error_check(roman_numerals);
-    if(err == 1)
+    int error = error_check(roman_numerals);
+    if(error == 1)
     {
-        return 0;
+        
+        return err;
     }   
 
     int a = 0;
@@ -159,8 +155,7 @@ char *roman(char *buf)
         {
             if(v_flag == 1)
             {
-                fprintf(stderr, "Only one allowed\n");
-                return 0;
+                return err;
             }
             v_flag = 1;
         }
@@ -168,8 +163,7 @@ char *roman(char *buf)
         {
             if(l_flag == 1)
             {
-                fprintf(stderr, "ONly one allowed\n");
-                return 0;
+                return err;
             }
             l_flag = 1;
         }
@@ -177,8 +171,7 @@ char *roman(char *buf)
         {
             if(d_flag == 1)
             {
-                fprintf(stderr, "ONly one allowed\n");
-                return 0;
+                return err;
             }
             d_flag = 1;
         }
@@ -188,8 +181,7 @@ char *roman(char *buf)
         }
         if(current < array[g])
         {
-            fprintf(stderr, "Not valid\n");
-            return 0;
+            return err;
         }
         if(current > array[g])
         {
@@ -198,16 +190,14 @@ char *roman(char *buf)
         }
         if(occurence > 4)
         {
-            fprintf(stderr, "too many occurences\n");
-            return 0;
+            return err;
         }
         sum += array[g];
     }
     
     if(sum > 4000)
     {
-        fprintf(stderr, "Values greater than 4000 not allowed\n");
-        return 0;
+        return err;
     }
    // free(roman_numerals);
     char *send_buf = malloc(64 * sizeof(char));
