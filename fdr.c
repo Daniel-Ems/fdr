@@ -83,7 +83,13 @@ int main(void)
             {
                 perror("problem receiving");
             }
-            printf("Connected\n");
+            char *send_buf = buf_strip(buf);
+
+
+            sendto(sock_1k, send_buf, strlen(send_buf), 0, 
+                  (struct sockaddr *)&client, client_sz); 
+
+            free(send_buf);
 
         }
     }        
@@ -102,7 +108,14 @@ int main(void)
             {
                 perror("problem receiving");
             }
-            printf("Connected\n");
+            
+            char *send_buf = buf_strip(buf);
+
+
+            sendto(sock_2k, send_buf, strlen(send_buf), 0, 
+                  (struct sockaddr *)&client, client_sz); 
+
+            free(send_buf);          
    
         }    
    
@@ -206,7 +219,7 @@ char *fib(char *string)
     BN_dec2bn(&first, "0");
     BN_dec2bn(&second, "1");
     
-    for (c = 0; c < n; c++)
+    for (c = 0; c <= n; c++)
     {
         if(c <= 1)
         {
@@ -225,11 +238,10 @@ char *fib(char *string)
             BN_swap(first, second);
         }
     }
-    char *buffer = BN_bn2dec(first);
+    char *buffer = BN_bn2hex(first);
     string = buffer;
     BN_free(first);
     BN_free(second);
-    free(buffer);
     return(string);
 }
 
