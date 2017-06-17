@@ -8,8 +8,13 @@
 #include <unistd.h>
 #include <signal.h>
 #include <sys/wait.h>
+#include <openssl/bn.h>
+
 #include "roman.h"
 
+
+char *fib(char *string);
+char *bignum(char *string);
 int build_socket(int port_modifier);
 char *buf_strip(char *buf);
 void kill_children(int signum)
@@ -49,12 +54,8 @@ int main(void)
             {
                 perror("problem receiving");
             }
-            buf_strip(buf);
-            int retval = roman(buf_strip(buf));
+            char *send_buf = buf_strip(buf);
 
-            char *send_buf = malloc(100 * sizeof(int));
-            memset(send_buf, '\0', sizeof(send_buf));
-            snprintf(send_buf, sizeof(send_buf), "0x%x", retval);
 
             sendto(sock, send_buf, strlen(send_buf), 0, 
                   (struct sockaddr *)&client, client_sz); 
@@ -157,37 +158,88 @@ int build_socket(int port_modifier)
 char *buf_strip(char * buf)
 {
     char value = buf[0];
+    int retval = 0;
     switch(value){
 
-    case 'F':
+    case 'R':
         //call fibonacci
-        printf("fibonnaci\n");
-        return(buf+1);
-    case 'f':
+        return(roman(buf+1));
+    case 'r':
         //call fibonacci
-        printf("fibonnaci\n");
-        return(buf+1);
+        return(roman(buf+1));
 
     case 'D':
         //call decimal
-        printf("decimal\n");
-        return(buf+1);
+        
+        return(bignum(buf+1));
     
     case  'd': 
         //call decimal
         printf("decimal\n");
-        return(buf+1);
+        return(bignum(buf+1));
     
-    case  'R':
+    case  'F':
         //Roman
-        printf("roman\n");
-        return(buf+1);
+        return(fib(buf+1));
 
-    case  'r':
+    case  'f':
         //Roman
-        printf("roman");
-        return(buf+1);
+        return(fib(buf+1));
     }
         
     	
+}
+
+char *fib(char *string)
+{
+    char *err ='\0';
+    long n = strtol(string, &err, 10);
+    if(!err)
+    {
+        exit(0);
+    }
+    
+    BIGNUM *first = BN_new();
+    BIGNUM *second = BN_new();
+    int c = 0;
+
+    BN_dec2bn(&first, "0");
+    BN_dec2bn(&second, "1");
+    
+    for (c = 0; c < n; c++)
+    {
+        if(c <= 1)
+        {
+            if(c == 0)
+            {
+                BN_dec2bn(&first, "0");
+            }
+            else
+            {
+                BN_dec2bn(&first, "1");
+            }
+        }
+        else
+        {
+            BN_add(first, first, second);
+            BN_swap(first, second);
+        }
+    }
+    char *buffer = BN_bn2dec(first);
+    string = buffer;
+    BN_free(first);
+    BN_free(second);
+    free(buffer);
+    return(string);
+}
+
+char *bignum(char * string)
+{
+    BIGNUM *num = BN_new();
+    BN_dec2bn(&num, string);
+    char *hexval = BN_bn2hex(num);
+    string = hexval;
+
+    BN_free(num);
+    return(string);
 }

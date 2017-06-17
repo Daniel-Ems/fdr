@@ -115,7 +115,7 @@ int error_check(char *roman_numerals)
 }
 
 
-int roman(char *buf)
+char *roman(char *buf)
 {
     
     char * roman_numerals = buf;
@@ -210,7 +210,10 @@ int roman(char *buf)
         return 0;
     }
    // free(roman_numerals);
+    char *send_buf = malloc(64 * sizeof(char));
+    memset(send_buf, '\0', sizeof(send_buf));
+    snprintf(send_buf, sizeof(send_buf), "0x%x", sum);
     dict_destroy(dict);
-    return sum;
+    return send_buf;
 }
 
