@@ -118,8 +118,9 @@ int error_check(char *roman_numerals)
 int roman(char *buf)
 {
     
-    char * roman_numerals = malloc(strlen(buf));
-    strncpy(roman_numerals, buf, strlen(buf)-1);
+    char * roman_numerals = buf;
+     
+    printf("%s\n", roman_numerals);
     struct dictionary *dict = create(); 
     int array[32];
     int err = error_check(roman_numerals);
@@ -208,7 +209,7 @@ int roman(char *buf)
         fprintf(stderr, "Values greater than 4000 not allowed\n");
         return 0;
     }
-    free(roman_numerals);
+   // free(roman_numerals);
     dict_destroy(dict);
     return sum;
 }

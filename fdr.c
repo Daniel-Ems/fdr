@@ -36,7 +36,7 @@ int main(void)
     
     if(fork()==0)
     {
-        sock = build_socket(2000);
+        sock = build_socket(0);
         
         for(;;)
         {
@@ -49,7 +49,8 @@ int main(void)
             {
                 perror("problem receiving");
             }
-            int retval = roman(buf);
+            buf_strip(buf);
+            int retval = roman(buf_strip(buf));
 
             char *send_buf = malloc(100 * sizeof(int));
             memset(send_buf, '\0', sizeof(send_buf));
@@ -88,7 +89,7 @@ int main(void)
 
     if(fork()==0)
     {
-        sock_2k = build_socket(3000);
+        sock_2k = build_socket(2000);
         for(;;)
         {
             
@@ -155,12 +156,38 @@ int build_socket(int port_modifier)
 
 char *buf_strip(char * buf)
 {
-    char *buffer = malloc(strlen(buf)+1);
-    printf("%s\n", buf);
+    char value = buf[0];
+    switch(value){
+
+    case 'F':
+        //call fibonacci
+        printf("fibonnaci\n");
+        return(buf+1);
+    case 'f':
+        //call fibonacci
+        printf("fibonnaci\n");
+        return(buf+1);
+
+    case 'D':
+        //call decimal
+        printf("decimal\n");
+        return(buf+1);
     
+    case  'd': 
+        //call decimal
+        printf("decimal\n");
+        return(buf+1);
     
-    strncpy(buffer, buf, strlen(buf)+1);
-   
-    free(buffer); 
-    return buffer;
+    case  'R':
+        //Roman
+        printf("roman\n");
+        return(buf+1);
+
+    case  'r':
+        //Roman
+        printf("roman");
+        return(buf+1);
+    }
+        
+    	
 }
