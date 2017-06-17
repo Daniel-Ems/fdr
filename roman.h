@@ -19,4 +19,5 @@ struct dictionary *create(void);
 void insert(struct dictionary *dict, char key, int value);
 int error_check(char *roman_numerals);
 int roman(char *roman_numerals);
+void dict_destroy(struct dictionary *dict);
 #endif

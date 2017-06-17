@@ -49,8 +49,16 @@ int main(void)
             {
                 perror("problem receiving");
             }
-            printf("0x%x\n", roman(buf));
+            int retval = roman(buf);
 
+            char *send_buf = malloc(100 * sizeof(int));
+            memset(send_buf, '\0', sizeof(send_buf));
+            snprintf(send_buf, sizeof(send_buf), "0x%x", retval);
+
+            sendto(sock, send_buf, strlen(send_buf), 0, 
+                  (struct sockaddr *)&client, client_sz); 
+
+            free(send_buf);
 
             
 
@@ -152,6 +160,7 @@ char *buf_strip(char * buf)
     
     
     strncpy(buffer, buf, strlen(buf)+1);
-    
+   
+    free(buffer); 
     return buffer;
 }

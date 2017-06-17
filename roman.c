@@ -10,10 +10,26 @@ void insert(struct dictionary *dict, char key, int value);
 int error_check(char *roman_numerals);
 int roman(char *roman_numerals, struct dictionary *dict);
 */
+void dict_destroy(struct dictionary *dict)
+{
+    struct key_value *curr;
+    struct key_value *step;
+    curr = dict->head;
+    step = curr;
+    while(curr->next)
+    {
+        curr = curr->next;
+        free(step);
+        step = curr;
+    }
+    free(curr);
+    free(dict);
+    
+}
 struct dictionary *create(void)
 {
     struct dictionary *dict = malloc(sizeof(dictionary));
-    struct key_value *end;
+    struct key_value *end = NULL;
     dict->head = end;
     insert(dict, 'I', 1);
     insert(dict, 'V', 5);
@@ -58,7 +74,7 @@ int error_check(char *roman_numerals)
     }
     
     int retFlag = 0;
-    for(int i = 0; i < strlen(roman_numerals); i++)
+    for(size_t i = 0; i < strlen(roman_numerals); i++)
     {
 
        // printf("%c\n", roman_numerals[i]);
@@ -76,7 +92,7 @@ int error_check(char *roman_numerals)
         }
         
         int flag = 0;   
-        for(int a = 0; a < strlen(valid); a++)
+        for(int a = 0; a < sizeof(valid); a++)
         {
             if(roman_numerals[i] == valid[a])
             {
@@ -102,7 +118,7 @@ int error_check(char *roman_numerals)
 int roman(char *buf)
 {
     
-    char * roman_numerals = malloc(strlen(buf)-1);
+    char * roman_numerals = malloc(strlen(buf));
     strncpy(roman_numerals, buf, strlen(buf)-1);
     struct dictionary *dict = create(); 
     int array[32];
@@ -187,169 +203,13 @@ int roman(char *buf)
         sum += array[g];
     }
     
-    /*        
-    array[a] = 0;
-    int outter = 0;
-    int buf[32];
-    int count =0;
-    int sub_flag =0;
-    int max_value = 0;
-    int m_count = 0;
-    int i_count = 0;
-    int c_count = 0;
-    int x_count = 0;
-    int v_flag = 0;
-    int l_flag = 0;
-    int d_flag = 0;
-
-    for(outter; outter < a; outter++)
-    {
-        if(sub_flag == 1)
-        {
-            if(array[outter] >= max_value)
-            {
-                fprintf(stderr,"Fuck you\n");
-                return 0;
-            }
-        }  
-        if(array[outter] < array[outter + 1])
-        {
-            if(array[outter] != 1 && array[outter] != 10 && array[outter] != 100)
-            {
-                fprintf(stderr,"invalid order\n");
-                return 0;
-            }
-            if(array[outter + 1] > array[outter] * 10)
-            {
-                fprintf(stderr,"invalid subtraction\n");
-                return 0;
-            }
-            if(array[outter + 1] == 500)
-            {
-                if(d_flag == 1)
-                {
-                    fprintf(stderr, "Too many D's\n");
-                    return 0;
-                }
-                d_flag = 1;
-
-            }
-            else if(array[outter+1] == 50)
-            {
-                if(l_flag == 1)
-                {
-                    fprintf(stderr, "Too many L's\n");
-                    return 0;
-                }
-                l_flag = 1;
-            }
-            else if(array[outter + 1] == 5)
-            {
-                if(v_flag == 1)
-                {
-                    fprintf(stderr, "Too many V's\n");
-                    return 0;
-                }
-                v_flag = 1;  
-            }
-            sum += (array[outter + 1] - array[outter]);
-            max_value = array[outter];
-            sub_flag = 1;
-            outter++;
-        }
-        else    
-        {
-            if(array[outter] == 1000)
-            {
-                if(m_count == 4)
-                {
-                    fprintf(stderr, "Too many M\n");
-                    return 0;
-                }
-                m_count++;
-            }
-            else if(array[outter] == 500)
-            {
-                if(d_flag == 1)
-                {
-                    fprintf(stderr, "Too many D\n");
-                    return 0;
-                }
-                d_flag = 1;
-            }
-            else if(array[outter] == 100)
-            {
-                if(c_count == 4)
-                {
-                    fprintf(stderr, "Too many Cs\n");
-                    return 0;
-                }
-                c_count++;
-            }
-            else if(array[outter] == 50)
-            {
-                if(l_flag == 1)
-                {
-                    fprintf(stderr, "Too many L's\n");
-                    return 0;
-                }
-                l_flag = 1;
-            }
-            else if(array[outter] == 10)
-            {
-                if(x_count == 4)
-                {
-                    fprintf(stderr, "Too many Xs\n");
-                    return 0;
-                }
-                x_count++;
-            }
-            else if(array[outter] == 5)
-            {
-                if(v_flag == 1)
-                {
-                    fprintf(stderr, "Too many V's\n");
-                    return 0;
-                }
-                v_flag = 1;
-            }
-            else if(array[outter] == 1)
-            {
-                if(i_count == 4)
-                {
-                    fprintf(stderr, "Too many i's\n");
-                    return 0;
-                }
-                i_count++;
-            }
-            
-            count+=1;
-            sum += array[outter];
-        }
-            
-    }   
-    */
-    
     if(sum > 4000)
     {
         fprintf(stderr, "Values greater than 4000 not allowed\n");
         return 0;
     }
-
+    free(roman_numerals);
+    dict_destroy(dict);
     return sum;
 }
 
-/*
-int main(int argc, char *argv[])
-{
-    struct dictionary *dict = create(); 
-    int retval = roman(argv[1], dict);
-    
-    if(retval == 1)
-    {
-        printf("Valid\n");
-    }
-       
-   return 0;
-}
-*/
